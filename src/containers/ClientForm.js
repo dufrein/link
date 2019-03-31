@@ -24,7 +24,6 @@ class ClientForm extends React.Component {
 		if ([...this.form.current].some((item,index)=>{return !item.value && index<6})){
             return false;
         }
-		let id = store.getState().tableClientsReducer.id;
         editClientSave(this.state);
 		saveOnBackend(store.getState().tableClientsReducer.data);
 	}
@@ -34,7 +33,6 @@ class ClientForm extends React.Component {
 	}
 
 	render () {
-	
 		return (
 			<form onSubmit={this.saveChange} ref={this.form}>
 			<div className = 'rowForm'>
@@ -48,7 +46,7 @@ class ClientForm extends React.Component {
 			<LabelWrapper>Город</LabelWrapper><input type = 'text' name= "city" value={this.state.city} onChange={this.handleChange}/>
 			</div>
 			<label>Список объектов на обслуживании:</label>
-			<ContractsList contracts = {this.state.listService}/>
+			<ContractsList id = {this.state.id}/>
 			<br/>
 			<label>Дополнительная информация:</label>
 			<br/>

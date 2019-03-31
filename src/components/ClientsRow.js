@@ -1,14 +1,12 @@
 import React from 'react';
-import {ClientsRowStyled} from './ClientsRowStyled';
-
+import { ClientsRowStyled } from './ClientsRowStyled';
 
 export default class ClientsRow extends React.Component {
     render() {
         return (
-        <ClientsRowStyled>
+            <ClientsRowStyled>
 			{this.props.children}
 		</ClientsRowStyled>
         )
     }
 }
-

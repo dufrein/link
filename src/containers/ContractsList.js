@@ -8,27 +8,21 @@ import {connect} from 'react-redux';
 import {actions} from '../reducers/contractsReducer';
 import ReactModal from 'react-modal';
 import {ButtonStyled} from '../components/ButtonStyled';
+import ContractForm from './ContractForm';
 
 const editContractOpen = actions.editContractOpen;
 
 class ContractsList extends React.Component {
 	handleClick = (id) => {
 		let {editContractOpen} = this.props;
-		console.dir(id);
 		editContractOpen(id);
 	}
 	handleCloseModal = () => {
 		let {editContractOpen} =  this.props;
 		editContractOpen('');
-        // this.setState({ showModal: false });
     }
     render () {
-    	let contracts = store.getState().contractsReducer.dataContracts.filter((item)=>{if (this.props.contracts.indexOf(item.contract*1)>-1) {return item}});
-
-    	console.dir(store.getState().contractsReducer.dataContracts);
-    	console.dir(this.props.contracts);
-    	console.dir(contracts);
-
+    	let contracts = store.getState().contractsReducer.dataContracts.filter((item)=>item.id===this.props.id);
     	if (contracts.length===0) {
     		return (<p>отсутствуют объекты на обслуживании</p>)
     	}
@@ -39,25 +33,27 @@ class ContractsList extends React.Component {
     	{contracts.map((item, i)=> {
     		return (
     		<ContractRowStyled key={item.contract}>
-	    		{Object.keys(item).map((field)=>{
-	    			if (field!='listOfServices') return (<Item key={field}>{item[field]}</Item>)
-	    				return (<ListOfServices data={item['contract']}/>)
-	    		})}
-	    		<Item  onClick = {this.handleClick.bind(null,item)}>ред.</Item>
+                {Object.keys(item).map((field)=>{
+    		      	if (field==='dataStart' || field==='dataEnd') return (<Item key={field}>{item[field].toLocaleString().replace(/\//g,'-').slice(0,10)}</Item>)
+    				if (field==='listOfServices'){ return (<ListOfServices key={field} data={item['idC']}/>)}
+    				if (  field!=='id' &&  field!=='idC' ) {return (<Item key={field}>{item[field]}</Item>)}
+                    return ''
+    			})}
+    			<Item  onClick = {this.handleClick.bind(null,item)}>ред.</Item>
     		</ContractRowStyled>
     		)})}
     		<ReactModal isOpen={!!this.props.contractsReducer.id} contentLabel="Minimal Modal Example">
-    		<ButtonStyled><button onClick={this.handleCloseModal}>Close Modal</button></ButtonStyled>
-    		<br/>
-    		<br/>
-
+    			<ButtonStyled><button onClick={this.handleCloseModal}>Close Modal</button></ButtonStyled>
+    			<br/>
+    			<ContractForm/>
     		</ReactModal>
-    		</>)}}
+    	</>
+)}}
 
-    		const mapStateToProps = (store) => {
-    			return {
-    				contractsReducer: store.contractsReducer
-    			}
-    		}
+const mapStateToProps = (store) => {
+    return {
+    	contractsReducer: store.contractsReducer
+    }
+}
 
-    		export default connect(mapStateToProps, {editContractOpen})(ContractsList);
+export default connect(mapStateToProps, {editContractOpen})(ContractsList);
